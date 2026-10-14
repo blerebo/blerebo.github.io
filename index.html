@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<a href="parser.html" class="nav-link">🔍 Парсер</a>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Python-курс — Интерактивные задания</title>
+<title>PyStart — Курс Python</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   body { background: #f5f7fb; color: #1a1a2e; line-height: 1.6; min-height: 100vh; }
@@ -12,25 +11,50 @@
   /* HEADER */
   header {
     background: linear-gradient(135deg, #4f46e5, #7c3aed);
-    color: white;
-    padding: 18px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    color: white; padding: 15px 40px;
+    display: flex; justify-content: space-between; align-items: center;
     box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    position: sticky; top: 0; z-index: 100;
   }
   .logo { font-size: 22px; font-weight: bold; }
-  .user-info { display: flex; align-items: center; gap: 15px; font-size: 15px; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  .nav-btn {
+    color: white; text-decoration: none;
+    background: rgba(255,255,255,0.15);
+    padding: 8px 18px; border-radius: 10px;
+    font-weight: 600; font-size: 14px;
+    border: 2px solid rgba(255,255,255,0.25);
+    transition: all 0.2s;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-1px); }
+
+  .coin-display {
+    background: rgba(255,255,255,0.2);
+    padding: 8px 18px; border-radius: 50px;
+    font-weight: bold; font-size: 16px;
+    display: flex; align-items: center; gap: 8px;
+    border: 2px solid rgba(255,255,255,0.3);
+    transition: transform 0.3s;
+  }
+  .coin-display.bump { animation: coinBump 0.6s ease; }
+  @keyframes coinBump {
+    0%,100% { transform: scale(1); }
+    40%     { transform: scale(1.2); background: #fbbf24; color: #1a1a2e; }
+  }
+
   .avatar {
     width: 40px; height: 40px; border-radius: 50%;
     background: rgba(255,255,255,0.25);
     display: flex; align-items: center; justify-content: center;
-    font-weight: bold;
+    font-weight: bold; font-size: 20px;
+    cursor: pointer; border: 2px solid rgba(255,255,255,0.4);
   }
+
   .reset-btn {
     background: rgba(255,255,255,0.15);
     border: 1px solid rgba(255,255,255,0.3);
-    color: white; padding: 8px 16px; border-radius: 8px;
+    color: white; padding: 8px 14px; border-radius: 8px;
     cursor: pointer; font-size: 13px;
   }
   .reset-btn:hover { background: rgba(255,255,255,0.3); }
@@ -41,32 +65,32 @@
   /* PROGRESS */
   .progress-card {
     background: white; border-radius: 20px; padding: 30px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06); margin-bottom: 25px;
   }
   .progress-header {
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 20px; flex-wrap: wrap; gap: 15px;
   }
-  .progress-header h1 { font-size: 26px; }
-  .stats { display: flex; gap: 25px; font-size: 15px; color: #666; }
+  .progress-header h1 { font-size: 24px; }
+  .stats { display: flex; gap: 25px; font-size: 14px; color: #666; flex-wrap: wrap; }
   .stats b { color: #4f46e5; font-size: 20px; display: block; }
-  .progress-bar { height: 16px; background: #eef0f7; border-radius: 10px; overflow: hidden; }
+  .progress-bar { height: 14px; background: #eef0f7; border-radius: 10px; overflow: hidden; }
   .progress-fill {
     height: 100%; background: linear-gradient(90deg, #4f46e5, #7c3aed);
-    border-radius: 10px; width: 0%; transition: width 0.5s ease;
+    border-radius: 10px; width: 0%; transition: width 0.6s ease;
   }
 
   /* FILTERS */
-  .filters { display: flex; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
+  .filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
   .filter-btn {
     padding: 8px 18px; border: 2px solid #e0e3ee; background: white;
-    color: #666; border-radius: 50px; cursor: pointer; font-size: 14px;
-    font-weight: 500; transition: all 0.2s;
+    color: #666; border-radius: 50px; cursor: pointer;
+    font-size: 14px; font-weight: 500; transition: all 0.2s;
   }
   .filter-btn:hover { border-color: #7c3aed; color: #7c3aed; }
   .filter-btn.active { background: #4f46e5; border-color: #4f46e5; color: white; }
 
-  /* TASK LIST */
+  /* TASKS */
   .tasks { display: flex; flex-direction: column; gap: 14px; }
   .task {
     background: white; border-radius: 14px; overflow: hidden;
@@ -77,15 +101,15 @@
   .task.open { box-shadow: 0 8px 30px rgba(79,70,229,0.15); }
 
   .task-header {
-    padding: 20px 24px; display: flex; align-items: center; gap: 20px;
+    padding: 20px 24px; display: flex; align-items: center; gap: 18px;
     cursor: pointer; user-select: none;
   }
   .task-header:hover { background: #fafbff; }
 
   .status-icon {
-    width: 32px; height: 32px; min-width: 32px; border-radius: 50%;
+    width: 34px; height: 34px; min-width: 34px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-weight: bold; font-size: 16px;
+    font-weight: bold; font-size: 15px;
     background: #eef0f7; color: #aaa;
   }
   .task.done .status-icon { background: #10b981; color: white; }
@@ -94,7 +118,10 @@
   .task-body { flex: 1; }
   .task-title { font-weight: 600; font-size: 16px; margin-bottom: 3px; }
   .task.done .task-title { color: #10b981; }
-  .task-meta { font-size: 13px; color: #888; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .task-meta {
+    font-size: 13px; color: #888;
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+  }
   .badge {
     background: #eef0f7; padding: 2px 10px; border-radius: 6px;
     font-size: 12px; color: #4f46e5; font-weight: 500;
@@ -102,6 +129,13 @@
   .type-badge { background: #fef3c7; color: #d97706; }
   .type-badge.code { background: #dbeafe; color: #2563eb; }
   .type-badge.text { background: #fce7f3; color: #be185d; }
+
+  .reward-badge {
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white; padding: 2px 10px; border-radius: 6px;
+    font-size: 12px; font-weight: 700;
+  }
+  .task.done .reward-badge { background: #10b981; }
 
   .arrow { color: #aaa; transition: transform 0.3s; font-size: 20px; }
   .task.open .arrow { transform: rotate(90deg); color: #4f46e5; }
@@ -111,33 +145,29 @@
     max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
     border-top: 1px solid #eef0f7;
   }
-  .task.open .task-content { max-height: 900px; }
+  .task.open .task-content { max-height: 1000px; }
 
   .content-inner { padding: 24px; background: #fafbff; }
   .question { margin-bottom: 18px; font-size: 15px; }
   .question strong { color: #4f46e5; }
 
-  /* OPTIONS (тест) */
   .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
   .option {
     padding: 12px 18px; background: white; border: 2px solid #e0e3ee;
-    border-radius: 10px; cursor: pointer; transition: all 0.2s;
-    font-size: 14px;
+    border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 14px;
   }
   .option:hover { border-color: #7c3aed; }
   .option.selected { border-color: #4f46e5; background: #eef0ff; }
   .option.correct { border-color: #10b981; background: #f0fdf4; }
   .option.wrong { border-color: #ef4444; background: #fef2f2; }
 
-  /* INPUT (текст/число) */
   .input-answer {
     width: 100%; padding: 12px 16px; border: 2px solid #e0e3ee;
-    border-radius: 10px; font-size: 15px; font-family: inherit;
-    outline: none; transition: border-color 0.2s; margin-bottom: 15px;
+    border-radius: 10px; font-size: 15px; outline: none;
+    transition: border-color 0.2s; margin-bottom: 15px;
   }
   .input-answer:focus { border-color: #4f46e5; }
 
-  /* CODE EDITOR */
   .code-editor {
     width: 100%; min-height: 130px; padding: 15px;
     background: #1e1e2e; color: #e0e0e0; border: none;
@@ -151,7 +181,6 @@
     color: #92400e; margin-bottom: 15px;
   }
 
-  /* BUTTONS */
   .actions { display: flex; gap: 10px; flex-wrap: wrap; }
   .btn-check {
     padding: 12px 28px; background: #4f46e5; color: white;
@@ -160,6 +189,12 @@
   }
   .btn-check:hover { background: #4338ca; transform: translateY(-1px); }
   .btn-check:disabled { background: #c7cbe0; cursor: not-allowed; transform: none; }
+  .btn-hint {
+    padding: 12px 20px; background: #fef3c7; color: #92400e;
+    border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-hint:hover { background: #fde68a; }
   .btn-reset-task {
     padding: 12px 20px; background: transparent; color: #666;
     border: 2px solid #e0e3ee; border-radius: 10px; font-size: 15px;
@@ -167,7 +202,6 @@
   }
   .btn-reset-task:hover { border-color: #ef4444; color: #ef4444; }
 
-  /* RESULT */
   .result {
     margin-top: 15px; padding: 14px 18px; border-radius: 10px;
     font-size: 14px; font-weight: 500; display: none;
@@ -175,7 +209,6 @@
   .result.show { display: block; }
   .result.success { background: #f0fdf4; color: #059669; border-left: 4px solid #10b981; }
   .result.error { background: #fef2f2; color: #dc2626; border-left: 4px solid #ef4444; }
-  .result.info { background: #eff6ff; color: #2563eb; border-left: 4px solid #3b82f6; }
 
   /* CONGRATS */
   .congrats {
@@ -191,10 +224,27 @@
   .empty { text-align: center; padding: 60px 20px; color: #aaa; }
   .empty .icon { font-size: 60px; margin-bottom: 15px; }
 
+  /* COIN FLY */
+  .coin-fly {
+    position: fixed; font-size: 24px; font-weight: 900;
+    color: #f59e0b; pointer-events: none; z-index: 9999;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    animation: coinFly 1.6s ease forwards;
+  }
+  @keyframes coinFly {
+    0%   { opacity: 0; transform: translateY(20px) scale(0.8); }
+    20%  { opacity: 1; transform: translateY(0) scale(1.15); }
+    40%  { transform: translateY(-6px) scale(1); }
+    80%  { opacity: 1; transform: translateY(-6px); }
+    100% { opacity: 0; transform: translateY(-50px); }
+  }
+
   @media (max-width: 640px) {
-    header { padding: 15px 20px; }
+    header { padding: 12px 18px; flex-wrap: wrap; gap: 10px; }
     .user-info .name { display: none; }
     .progress-header { flex-direction: column; align-items: flex-start; }
+    .container { padding: 20px 12px; }
+    .nav-btn { font-size: 12px; padding: 6px 12px; }
   }
 </style>
 </head>
@@ -202,10 +252,11 @@
 
 <header>
   <div class="logo">🐍 PyStart</div>
-  <div class="user-info">
-    <span class="name">Даниил Васнецов</span>
-    <div class="avatar">ДВ</div>
-    <button class="reset-btn" onclick="resetAll()">Сбросить всё</button>
+  <div class="header-right">
+    <a href="game.html" class="nav-btn">🏰 Комната героя</a>
+    <div class="coin-display" id="coinDisplay">🪙 <span id="coinCount">0</span></div>
+    <div class="avatar" id="avatar">🧑‍💻</div>
+    <button class="reset-btn" onclick="resetAll()">Сброс</button>
   </div>
 </header>
 
@@ -214,11 +265,12 @@
     <div class="progress-header">
       <div>
         <h1>📘 Python с нуля</h1>
-        <p style="color:#888; font-size:14px;">15 интерактивных заданий с автопроверкой</p>
+        <p style="color:#888; font-size:14px;">Решай задания — зарабатывай пикоины</p>
       </div>
       <div class="stats">
         <div>Решено<b id="doneCount">0 / 15</b></div>
         <div>Прогресс<b id="percentText">0%</b></div>
+        <div>Заработано<b id="earnedCoins">0 🪙</b></div>
       </div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -226,12 +278,12 @@
 
   <div class="congrats" id="congrats">
     <h3>🎉 Курс пройден!</h3>
-    <p>Все 15 заданий решены. Ты настоящий Python-ниндзя!</p>
+    <p>Все задания решены. Ты настоящий Python-ниндзя!</p>
   </div>
 
   <div class="filters">
     <button class="filter-btn active" data-filter="all">Все</button>
-    <button class="filter-btn" data-filter="todo">Нерешённые</button>
+    <button class="filter-btn" data-filter="todo">Не решённые</button>
     <button class="filter-btn" data-filter="done">Решённые</button>
   </div>
 
@@ -242,192 +294,87 @@
   </div>
 </div>
 
+<script src="course-data.js"></script>
 <script>
 /* ============================================================
-   КУРС — 15 ЗАДАНИЙ
-   type: 'choice' | 'code' | 'text'
+   💾 ОБЩЕЕ СОСТОЯНИЕ (тот же ключ, что и в game.html)
 ============================================================ */
-const TASKS = [
-  {
-    id: 1, module: 'Модуль 1', time: '5 мин', type: 'choice',
-    title: 'Какой оператор выводит текст на экран в Python?',
-    question: 'Выбери правильный вариант:',
-    options: ['echo "Привет"', 'print("Привет")', 'console.log("Привет")', 'printf("Привет")'],
-    correct: 1,
-    explain: 'Функция print() — стандартный способ вывода в Python.'
-  },
-  {
-    id: 2, module: 'Модуль 1', time: '5 мин', type: 'text',
-    title: 'Какой тип данных у числа 3.14?',
-    question: 'Впиши название типа (одним словом, латиницей):',
-    answer: 'float',
-    explain: 'Числа с точкой — это float (числа с плавающей точкой).'
-  },
-  {
-    id: 3, module: 'Модуль 2', time: '5 мин', type: 'text',
-    title: 'Что выведет выражение: 2 ** 3?',
-    question: 'Впиши число:',
-    answer: '8',
-    explain: 'Оператор ** — возведение в степень. 2³ = 8.'
-  },
-  {
-    id: 4, module: 'Модуль 2', time: '5 мин', type: 'choice',
-    title: 'Какой оператор проверяет равенство?',
-    question: 'Выбери правильный:',
-    options: ['=', '==', '===', 'equals'],
-    correct: 1,
-    explain: 'В Python = это присваивание, а == — сравнение.'
-  },
-  {
-    id: 5, module: 'Модуль 2', time: '10 мин', type: 'code',
-    title: 'Напиши программу, которая выводит сумму 5 и 7',
-    question: 'Напиши код. Он должен вывести <strong>12</strong> в консоль.',
-    starter: 'print(5 + 7)',
-    // проверяем через "виртуальный запуск" через eval-подобную проверку
-    validate: (code) => {
-      try {
-        const clean = code.replace(/print\s*\(/g, 'return (');
-        // подменяем последний return на вывод — это грубо, но для демо работает
-        const outputs = [];
-        const fakePrint = (v) => outputs.push(String(v));
-        // eslint-disable-next-line no-new-func
-        new Function('print', code)(fakePrint);
-        return { ok: outputs.join(',') === '12', outputs };
-      } catch (e) {
-        return { ok: false, error: e.message };
-      }
-    },
-    explain: 'print(5 + 7) выведет 12. Также подойдёт print(12).'
-  },
-  {
-    id: 6, module: 'Модуль 3', time: '5 мин', type: 'text',
-    title: 'Сколько символов в строке "Python"?',
-    question: 'Впиши число:',
-    answer: '6',
-    explain: 'len("Python") вернёт 6.'
-  },
-  {
-    id: 7, module: 'Модуль 3', time: '5 мин', type: 'choice',
-    title: 'Что делает метод .upper() у строки?',
-    question: 'Выбери правильный ответ:',
-    options: [
-      'Делает первую букву заглавной',
-      'Переводит строку в верхний регистр',
-      'Удаляет пробелы',
-      'Разворачивает строку'
-    ],
-    correct: 1,
-    explain: '"hello".upper() → "HELLO"'
-  },
-  {
-    id: 8, module: 'Модуль 3', time: '10 мин', type: 'code',
-    title: 'Выведи длину строки "Hello, world!"',
-    question: 'Используй функцию len() и print(), чтобы вывести <strong>13</strong>.',
-    starter: 'text = "Hello, world!"\nprint(len(text))',
-    validate: (code) => {
-      try {
-        const outputs = [];
-        const fakePrint = (v) => outputs.push(String(v));
-        new Function('print', code)(fakePrint);
-        return { ok: outputs.join(',') === '13', outputs };
-      } catch (e) {
-        return { ok: false, error: e.message };
-      }
-    },
-    explain: 'len("Hello, world!") = 13 (включая пробел, запятую и восклицательный знак).'
-  },
-  {
-    id: 9, module: 'Модуль 4', time: '5 мин', type: 'text',
-    title: 'Какой индекс у последнего элемента списка [10, 20, 30]?',
-    question: 'Впиши число (обычный положительный индекс):',
-    answer: '2',
-    explain: 'Индексация с нуля: 10→0, 20→1, 30→2.'
-  },
-  {
-    id: 10, module: 'Модуль 4', time: '5 мин', type: 'choice',
-    title: 'Как добавить элемент в конец списка?',
-    question: 'Выбери метод:',
-    options: ['list.add(x)', 'list.push(x)', 'list.append(x)', 'list.insert(x)'],
-    correct: 2,
-    explain: 'append() добавляет в конец. insert() — по индексу.'
-  },
-  {
-    id: 11, module: 'Модуль 5', time: '5 мин', type: 'text',
-    title: 'Какое ключевое слово создаёт функцию?',
-    question: 'Впиши одно слово (латиницей):',
-    answer: 'def',
-    explain: 'def my_func(): — так объявляется функция.'
-  },
-  {
-    id: 12, module: 'Модуль 5', time: '10 мин', type: 'code',
-    title: 'Напиши функцию square(n), возвращающую квадрат числа',
-    question: 'Функция должна вернуть n². Проверка вызовет square(4) и ожидает <strong>16</strong>.',
-    starter: 'def square(n):\n    return n * n\n\nprint(square(4))',
-    validate: (code) => {
-      try {
-        const outputs = [];
-        const fakePrint = (v) => outputs.push(String(v));
-        new Function('print', code)(fakePrint);
-        return { ok: outputs.join(',') === '16', outputs };
-      } catch (e) {
-        return { ok: false, error: e.message };
-      }
-    },
-    explain: 'return n * n или return n ** 2 — оба варианта верны.'
-  },
-  {
-    id: 13, module: 'Модуль 6', time: '5 мин', type: 'choice',
-    title: 'Что такое self в методах класса?',
-    question: 'Выбери правильный ответ:',
-    options: [
-      'Глобальная переменная',
-      'Ссылка на текущий экземпляр класса',
-      'Ключевое слово для создания объекта',
-      'Название модуля'
-    ],
-    correct: 1,
-    explain: 'self — это ссылка на конкретный объект, у которого вызван метод.'
-  },
-  {
-    id: 14, module: 'Модуль 6', time: '5 мин', type: 'text',
-    title: 'Какое ключевое слово создаёт класс?',
-    question: 'Впиши одно слово:',
-    answer: 'class',
-    explain: 'class MyClass: — объявление класса.'
-  },
-  {
-    id: 15, module: 'Модуль 7', time: '10 мин', type: 'code',
-    title: 'Финальный проект: выведи чётные числа от 0 до 6',
-    question: 'Используй цикл for или while, выведи <strong>по одному числу на строку</strong>: 0, 2, 4, 6.',
-    starter: 'for i in range(0, 7, 2):\n    print(i)',
-    validate: (code) => {
-      try {
-        const outputs = [];
-        const fakePrint = (v) => outputs.push(String(v));
-        new Function('print', code)(fakePrint);
-        return { ok: outputs.join(',') === '0,2,4,6', outputs };
-      } catch (e) {
-        return { ok: false, error: e.message };
-      }
-    },
-    explain: 'range(0, 7, 2) даёт 0, 2, 4, 6 — как раз чётные до 6 включительно.'
-  }
-];
+const KEY = 'pystart_game_v1';
 
-/* ============ СОСТОЯНИЕ ============ */
-const STORAGE_KEY = 'pystart_solved';
-let solved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-let userAnswers = JSON.parse(localStorage.getItem(STORAGE_KEY + '_answers') || '{}');
+function defaultState() {
+  return {
+    coins: 0,
+    totalEarned: 0,
+    solved: [],
+    answers: {},
+    inventory: {},
+    avatar: '🧑‍💻',
+    characterName: 'Новичок',
+    purchasedCount: 0
+  };
+}
+
+function loadState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(KEY) || '{}');
+    return { ...defaultState(), ...saved };
+  } catch { return defaultState(); }
+}
+
+function saveState() {
+  localStorage.setItem(KEY, JSON.stringify(state));
+}
+
+let state = loadState();
+let solved = state.solved;
+let userAnswers = state.answers;
+
+/* ============================================================
+   📚 ЗАДАНИЯ ИЗ ОБЩЕГО ФАЙЛА
+============================================================ */
+const TASKS = (window.COURSE_DATA && window.COURSE_DATA.tasks) || [];
+
+/* ============================================================
+   🐍 ПРОВЕРКА КОДА (упрощённый эмулятор)
+============================================================ */
+function runPythonLite(code, expected) {
+  try {
+    const outputs = [];
+    const fakePrint = (v) => outputs.push(String(v));
+
+    // Подменяем print() на наш сборщик и запускаем в песочнице
+    const patched = code.replace(/\bprint\s*\(/g, '__print(');
+    // eslint-disable-next-line no-new-func
+    const fn = new Function('__print', 'len', 'range', patched);
+    fn(fakePrint, (x) => x.length, (...args) => {
+      const [start, stop, step] = args.length === 1 ? [0, args[0], 1] : args;
+      const r = [];
+      for (let i = start; i < stop; i += step) r.push(i);
+      return r;
+    });
+
+    const got = outputs.join(',');
+    return { ok: got === expected, outputs, expected };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+}
+
+/* ============================================================
+   💾 СОХРАНЕНИЕ
+============================================================ */
+function save() {
+  state.solved = solved;
+  state.answers = userAnswers;
+  saveState();
+}
+
+/* ============================================================
+   🎨 РЕНДЕР
+============================================================ */
 let currentFilter = 'all';
 let openTaskId = null;
 
-/* ============ СОХРАНЕНИЕ ============ */
-function save() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(solved));
-  localStorage.setItem(STORAGE_KEY + '_answers', JSON.stringify(userAnswers));
-}
-
-/* ============ РЕНДЕР ============ */
 function render() {
   const list = document.getElementById('taskList');
   const emptyState = document.getElementById('emptyState');
@@ -439,11 +386,7 @@ function render() {
     return true;
   });
 
-  if (filtered.length === 0) {
-    emptyState.style.display = 'block';
-  } else {
-    emptyState.style.display = 'none';
-  }
+  emptyState.style.display = filtered.length === 0 ? 'block' : 'none';
 
   filtered.forEach(task => {
     const isDone = solved.includes(task.id);
@@ -453,7 +396,8 @@ function render() {
     el.className = 'task' + (isDone ? ' done' : '') + (isOpen ? ' open' : '');
     el.dataset.id = task.id;
 
-    const typeLabel = { choice: '📝 Тест', code: '💻 Код', text: '✏️ Ответ' }[task.type];
+    const typeLabel = { choice: '📝 Тест', code: '💻 Код', text: '✏️ Ответ' }[task.type] || '';
+    const reward = task.reward || 10;
 
     el.innerHTML = `
       <div class="task-header">
@@ -464,6 +408,7 @@ function render() {
             <span class="badge">${task.module}</span>
             <span class="badge type-badge ${task.type}">${typeLabel}</span>
             <span>⏱ ${task.time}</span>
+            <span class="reward-badge">${isDone ? '✓ Получено' : '+' + reward + ' 🪙'}</span>
           </div>
         </div>
         <div class="arrow">›</div>
@@ -475,41 +420,38 @@ function render() {
       </div>
     `;
 
-    // клик на header — раскрыть/свернуть
     el.querySelector('.task-header').addEventListener('click', () => {
       openTaskId = openTaskId === task.id ? null : task.id;
       render();
     });
 
     list.appendChild(el);
-
-    // привязка событий внутри задания
     if (isOpen) attachTaskHandlers(task);
   });
 
   updateProgress();
 }
 
-/* ============ HTML ТЕЛА ЗАДАНИЯ ============ */
+/* ============================================================
+   📝 HTML ТЕЛА ЗАДАНИЯ
+============================================================ */
 function renderTaskBody(task, isDone) {
   if (isDone) {
     return `
-      <div class="result success show">✓ Задание выполнено! ${task.explain}</div>
+      <div class="result success show">✓ Задание выполнено! ${task.explain || ''}</div>
       <div class="actions" style="margin-top:15px;">
         <button class="btn-reset-task" data-action="reset">Пройти заново</button>
       </div>
     `;
   }
 
-  const saved = userAnswers[task.id];
+  const savedAns = userAnswers[task.id];
 
   if (task.type === 'choice') {
     return `
       <div class="question">${task.question}</div>
       <div class="options" data-task="${task.id}">
-        ${task.options.map((opt, i) => `
-          <div class="option" data-index="${i}">${opt}</div>
-        `).join('')}
+        ${task.options.map((opt, i) => `<div class="option" data-index="${i}">${opt}</div>`).join('')}
       </div>
       <div class="actions">
         <button class="btn-check" data-action="check" disabled>Проверить</button>
@@ -521,7 +463,7 @@ function renderTaskBody(task, isDone) {
   if (task.type === 'text') {
     return `
       <div class="question">${task.question}</div>
-      <input class="input-answer" type="text" placeholder="Введи ответ..." value="${saved || ''}">
+      <input class="input-answer" type="text" placeholder="Введи ответ..." value="${savedAns || ''}">
       <div class="actions">
         <button class="btn-check" data-action="check">Проверить</button>
       </div>
@@ -532,8 +474,8 @@ function renderTaskBody(task, isDone) {
   if (task.type === 'code') {
     return `
       <div class="question">${task.question}</div>
-      <div class="code-hint">💡 Подсказка: используй print() для вывода. Код запускается в песочнице — с твоим компьютером ничего не случится.</div>
-      <textarea class="code-editor" spellcheck="false">${saved || task.starter || ''}</textarea>
+      <div class="code-hint">💡 Пиши код на Python. Он выполнится в песочнице — с твоим компьютером ничего не случится.</div>
+      <textarea class="code-editor" spellcheck="false">${savedAns || task.starter || ''}</textarea>
       <div class="actions">
         <button class="btn-check" data-action="check">▶ Запустить и проверить</button>
       </div>
@@ -542,12 +484,13 @@ function renderTaskBody(task, isDone) {
   }
 }
 
-/* ============ ОБРАБОТЧИКИ ВНУТРИ ЗАДАНИЯ ============ */
+/* ============================================================
+   🖱 ОБРАБОТЧИКИ ВНУТРИ ЗАДАНИЯ
+============================================================ */
 function attachTaskHandlers(task) {
   const root = document.querySelector(`.task[data-id="${task.id}"]`);
   if (!root) return;
 
-  // ВЫБОР ВАРИАНТА
   if (task.type === 'choice') {
     let selectedIdx = userAnswers[task.id + '_choice'] ?? null;
     const options = root.querySelectorAll('.option');
@@ -571,7 +514,6 @@ function attachTaskHandlers(task) {
     });
   }
 
-  // СОХРАНЕНИЕ ВВОДА
   const input = root.querySelector('.input-answer, .code-editor');
   if (input) {
     input.addEventListener('input', () => {
@@ -580,13 +522,9 @@ function attachTaskHandlers(task) {
     });
   }
 
-  // КНОПКА ПРОВЕРКИ
   const checkBtn = root.querySelector('[data-action="check"]');
-  if (checkBtn) {
-    checkBtn.addEventListener('click', () => checkAnswer(task));
-  }
+  if (checkBtn) checkBtn.addEventListener('click', () => checkAnswer(task));
 
-  // КНОПКА СБРОСА
   const resetBtn = root.querySelector('[data-action="reset"]');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
@@ -599,7 +537,9 @@ function attachTaskHandlers(task) {
   }
 }
 
-/* ============ ПРОВЕРКА ОТВЕТА ============ */
+/* ============================================================
+   ✅ ПРОВЕРКА ОТВЕТА
+============================================================ */
 function checkAnswer(task) {
   const root = document.querySelector(`.task[data-id="${task.id}"]`);
   const resultEl = root.querySelector('.result');
@@ -618,13 +558,13 @@ function checkAnswer(task) {
     });
 
     ok = selectedIdx === task.correct;
-    message = ok ? '✓ Верно! ' + task.explain : '✗ Неверно. Правильный вариант выделен зелёным.';
+    message = ok ? '✓ Верно! ' + (task.explain || '') : '✗ Неверно. Правильный вариант выделен зелёным.';
   }
 
   if (task.type === 'text') {
     const val = (userAnswers[task.id] || '').trim().toLowerCase();
-    ok = val === task.answer.toLowerCase();
-    message = ok ? '✓ Верно! ' + task.explain : '✗ Неверно. Попробуй ещё раз или подсмотри подсказку в конце.';
+    ok = val === String(task.answer).toLowerCase();
+    message = ok ? '✓ Верно! ' + (task.explain || '') : '✗ Неверно. Попробуй ещё раз.';
   }
 
   if (task.type === 'code') {
@@ -635,54 +575,113 @@ function checkAnswer(task) {
     } else {
       const res = task.validate(code);
       ok = res.ok;
-      if (ok) {
-        message = '✓ Код выполнен верно! ' + task.explain;
-      } else if (res.error) {
-        message = '✗ Ошибка выполнения: ' + res.error;
-      } else {
+      if (ok) message = '✓ Код выполнен верно! ' + (task.explain || '');
+      else if (res.error) message = '✗ Ошибка: ' + res.error;
+      else {
         const got = res.outputs && res.outputs.length ? res.outputs.join(', ') : 'ничего';
-        message = `✗ Код выполнился, но результат другой. Твой вывод: "${got}". Ожидалось другое.`;
+        message = `✗ Код выполнился, но результат другой. Твой вывод: "${got}".`;
       }
     }
   }
 
-  // показать сообщение
   resultEl.className = 'result show ' + (ok ? 'success' : 'error');
   resultEl.textContent = message;
 
-  // если верно — отметить решённым
   if (ok && !solved.includes(task.id)) {
     solved.push(task.id);
+
+    // 💰 Начисляем монеты
+    const reward = task.reward || 10;
+    state.coins = (state.coins || 0) + reward;
+    state.totalEarned = (state.totalEarned || 0) + reward;
+
     save();
-    setTimeout(() => render(), 1200);
+    showCoinReward(reward, root);
+
+    setTimeout(() => render(), 1400);
   }
 }
 
-/* ============ ПРОГРЕСС ============ */
+/* ============================================================
+   🪙 ВСПЛЫВАШКА С МОНЕТАМИ
+============================================================ */
+function showCoinReward(amount, anchorEl) {
+  // Позиция рядом с заданием, где заработали монеты
+  let x = window.innerWidth - 120;
+  let y = 130;
+  if (anchorEl) {
+    const rect = anchorEl.getBoundingClientRect();
+    x = rect.right - 80;
+    y = rect.top + 40;
+  }
+
+  const el = document.createElement('div');
+  el.className = 'coin-fly';
+  el.textContent = `+${amount} 🪙`;
+  el.style.left = x + 'px';
+  el.style.top = y + 'px';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1600);
+
+  // Анимация монетки в шапке
+  const coinEl = document.getElementById('coinDisplay');
+  if (coinEl) {
+    coinEl.classList.add('bump');
+    setTimeout(() => coinEl.classList.remove('bump'), 600);
+  }
+
+  // Обновляем счётчик монет и аватар
+  document.getElementById('coinCount').textContent = state.coins;
+  const earnedEl = document.getElementById('earnedCoins');
+  if (earnedEl) earnedEl.textContent = state.totalEarned + ' 🪙';
+  const av = document.getElementById('avatar');
+  if (av) av.textContent = state.avatar;
+}
+
+/* ============================================================
+   📊 ПРОГРЕСС
+============================================================ */
 function updateProgress() {
   const total = TASKS.length;
   const count = solved.length;
-  const percent = Math.round((count / total) * 100);
+  const percent = total ? Math.round((count / total) * 100) : 0;
 
   document.getElementById('doneCount').textContent = `${count} / ${total}`;
   document.getElementById('percentText').textContent = `${percent}%`;
   document.getElementById('progressFill').style.width = percent + '%';
 
+  const earnedEl = document.getElementById('earnedCoins');
+  if (earnedEl) earnedEl.textContent = (state.totalEarned || 0) + ' 🪙';
+
+  const coinEl = document.getElementById('coinCount');
+  if (coinEl) coinEl.textContent = state.coins || 0;
+
+  const av = document.getElementById('avatar');
+  if (av) av.textContent = state.avatar || '🧑‍💻';
+
   const congrats = document.getElementById('congrats');
-  congrats.classList.toggle('show', count === total);
+  if (congrats) congrats.classList.toggle('show', count === total && total > 0);
 }
 
-/* ============ СБРОС ============ */
+/* ============================================================
+   🔄 СБРОС
+============================================================ */
 function resetAll() {
-  if (!confirm('Сбросить весь прогресс и ответы?')) return;
-  solved = [];
-  userAnswers = {};
+  if (!confirm('Сбросить весь прогресс, монеты и предметы?')) return;
+  state = defaultState();
+  solved = state.solved;
+  userAnswers = state.answers;
+  saveState();
   openTaskId = null;
-  save();
+  currentFilter = 'all';
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
   render();
 }
 
-/* ============ ФИЛЬТРЫ ============ */
+/* ============================================================
+   🔍 ФИЛЬТРЫ
+============================================================ */
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -692,8 +691,25 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
-/* ============ СТАРТ ============ */
-render();
+/* ============================================================
+   🔁 СИНХРОНИЗАЦИЯ (если открыта игра в другой вкладке)
+============================================================ */
+window.addEventListener('storage', () => {
+  state = loadState();
+  solved = state.solved;
+  userAnswers = state.answers;
+  render();
+});
+
+/* ============================================================
+   🚀 СТАРТ
+============================================================ */
+if (TASKS.length === 0) {
+  document.getElementById('taskList').innerHTML =
+    '<div class="empty"><div class="icon">⚠️</div><p>Не найден файл course-data.js. Проверь, что он лежит рядом.</p></div>';
+} else {
+  render();
+}
 </script>
 
 </body>
