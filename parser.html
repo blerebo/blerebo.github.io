@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PyStart — Парсер курса</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+  body { background: #f5f7fb; color: #1a1a2e; line-height: 1.6; min-height: 100vh; }
+
+  header {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white; padding: 15px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  .logo { font-size: 22px; font-weight: bold; }
+  .nav-link {
+    color: white; text-decoration: none; font-weight: 500;
+    background: rgba(255,255,255,0.15); padding: 8px 18px;
+    border-radius: 8px; transition: background 0.2s;
+  }
+  .nav-link:hover { background: rgba(255,255,255,0.3); }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 30px 20px; }
+
+  h1 { font-size: 32px; margin-bottom: 8px; }
+  .subtitle { color: #888; margin-bottom: 30px; }
+
+  /* TOOLBAR */
+  .toolbar {
+    background: white; border-radius: 16px; padding: 20px 24px;
+    display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04); margin-bottom: 25px;
+  }
+  .toolbar-label { font-weight: 600; color: #666; font-size: 14px; margin-right: 4px; }
+
+  .btn {
+    padding: 10px 20px; border: none; border-radius: 10px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary { background: #4f46e5; color: white; }
+  .btn-primary:hover { background: #4338ca; }
+  .btn-outline {
+    background: white; color: #4f46e5; border: 2px solid #4f46e5;
+  }
+  .btn-outline:hover { background: #eef0ff; }
+  .btn-success { background: #10b981; color: white; }
+  .btn-success:hover { background: #059669; }
+
+  input[type="file"] { display: none; }
+
+  /* STATS GRID */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px; margin-bottom: 25px;
+  }
+  .stat-card {
+    background: white; border-radius: 16px; padding: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .stat-label { font-size: 13px; color: #888; }
+  .stat-value { font-size: 30px; font-weight: 700; color: #4f46e5; }
+  .stat-icon { font-size: 24px; }
+
+  /* MODULES */
+  .section-title {
+    font-size: 20px; font-weight: 700;
+    margin: 30px 0 15px; display: flex; align-items: center; gap: 10px;
+  }
+
+  .module-row {
+    background: white; border-radius: 14px; padding: 18px 24px;
+    margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+    display: flex; align-items: center; gap: 20px;
+  }
+  .module-name { font-weight: 600; flex: 1; }
+  .module-bar {
+    flex: 2; height: 10px; background: #eef0f7;
+    border-radius: 10px; overflow: hidden;
+  }
+  .module-bar-fill {
+    height: 100%; background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    border-radius: 10px; transition: width 0.5s;
+  }
+  .module-count { font-size: 14px; color: #666; min-width: 70px; text-align: right; }
+
+  /* TABLE */
+  .task-table {
+    background: white; border-radius: 16px; overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    background: #fafbff; text-align: left; padding: 14px 18px;
+    font-weight: 600; color: #666; font-size: 13px;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid #eef0f7;
+  }
+  td {
+    padding: 14px 18px; border-bottom: 1px solid #f5f7fb;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbff; }
+
+  .pill {
+    padding: 3px 10px; border-radius: 50px;
+    font-size: 12px; font-weight: 600; display: inline-block;
+  }
+  .pill-easy { background: #d1fae5; color: #065f46; }
+  .pill-medium { background: #fef3c7; color: #92400e; }
+  .pill-hard { background: #fee2e2; color: #991b1b; }
+  .pill-choice { background: #fef3c7; color: #d97706; }
+  .pill-code { background: #dbeafe; color: #2563eb; }
+  .pill-text { background: #fce7f3; color: #be185d; }
+
+  /* JSON VIEW */
+  .json-view {
+    background: #1e1e2e; color: #e0e0e0;
+    border-radius: 16px; padding: 24px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 13px; line-height: 1.6;
+    max-height: 500px; overflow: auto;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .json-key { color: #7dd3fc; }
+  .json-str { color: #a5f3a5; }
+  .json-num { color: #fbbf24; }
+  .json-bool { color: #f472b6; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; top: 80px; right: 20px;
+    background: #1a1a2e; color: white;
+    padding: 14px 22px; border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    font-size: 14px; font-weight: 500;
+    animation: slideIn 0.4s ease, fadeOut 0.4s ease 2.6s forwards;
+    z-index: 999;
+  }
+  .toast.success { background: linear-gradient(135deg, #10b981, #059669); }
+  .toast.error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+  @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
+  @keyframes fadeOut { to { transform: translateX(120%); opacity: 0; } }
+
+  @media (max-width: 640px) {
+    header { padding: 12px 18px; }
+    .container { padding: 20px 12px; }
+    h1 { font-size: 24px; }
+    table { font-size: 12px; }
+    th, td { padding: 10px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🐍 PyStart · Парсер</div>
+  <a href="index.html" class="nav-link">← К курсу</a>
+</header>
+
+<div class="container">
+  <h1>🔍 Парсер курса</h1>
+  <p class="subtitle">Читает данные курса, строит статистику и позволяет загрузить свой JSON.</p>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <span class="toolbar-label">Источник:</span>
+    <button class="btn btn-outline" onclick="loadFromEmbedded()">
+      📦 Встроенные данные
+    </button>
+    <label class="btn btn-primary">
+      📁 Загрузить JSON
+      <input type="file" accept=".json" onchange="loadFromFile(event)">
+    </label>
+    <button class="btn btn-outline" onclick="loadFromUrl()">
+      🌐 Загрузить с URL
+    </button>
+    <button class="btn btn-success" onclick="exportJSON()">
+      ⬇️ Экспорт JSON
+    </button>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📚</div>
+      <div class="stat-label">Всего заданий</div>
+      <div class="stat-value" id="statTotal">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">📦</div>
+      <div class="stat-label">Модулей</div>
+      <div class="stat-value" id="statModules">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🪙</div>
+      <div class="stat-label">Макс. награда</div>
+      <div class="stat-value" id="statReward">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏱</div>
+      <div class="stat-label">Общее время</div>
+      <div class="stat-value" id="statTime">0 мин</div>
+    </div>
+  </div>
+
+  <!-- MODULES -->
+  <h2 class="section-title">📦 Разбивка по модулям</h2>
+  <div id="modulesList"></div>
+
+  <!-- TASKS TABLE -->
+  <h2 class="section-title">📋 Все задания</h2>
+  <div class="task-table">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Название</th>
+          <th>Модуль</th>
+          <th>Тип</th>
+          <th>Сложность</th>
+          <th>⏱</th>
+          <th>🪙</th>
+        </tr>
+      </thead>
+      <tbody id="tasksTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- RAW JSON -->
+  <h2 class="section-title">📄 Сырые данные (JSON)</h2>
+  <div class="json-view" id="jsonView">Загрузка...</div>
+</div>
+
+<script src="course-data.js"></script>
+<script>
+/* ============================================================
+   🔍 ПАРСЕР
+   Принимает объект курса, возвращает нормализованную структуру
+============================================================ */
+function parseCourse(raw) {
+  if (!raw || !Array.isArray(raw.tasks)) {
+    throw new Error('Неверный формат: ожидается объект с полем "tasks" (массив)');
+  }
+
+  const tasks = raw.tasks.map(t => ({
+    id: t.id ?? 0,
+    title: t.title || 'Без названия',
+    module: t.module || 'Без модуля',
+    type: t.type || 'unknown',
+    difficulty: t.difficulty || 'medium',
+    time: t.time || '—',
+    reward: typeof t.reward === 'number' ? t.reward : 0
+  }));
+
+  // группировка по модулям
+  const byModule = {};
+  tasks.forEach(t => {
+    byModule[t.module] = (byModule[t.module] || 0) + 1;
+  });
+
+  // группировка по типам
+  const byType = {};
+  tasks.forEach(t => {
+    byType[t.type] = (byType[t.type] || 0) + 1;
+  });
+
+  // группировка по сложности
+  const byDifficulty = {};
+  tasks.forEach(t => {
+    byDifficulty[t.difficulty] = (byDifficulty[t.difficulty] || 0) + 1;
+  });
+
+  // суммарное время (парсим "5 мин" → 5)
+  const totalMinutes = tasks.reduce((sum, t) => {
+    const m = String(t.time).match(/(\d+)/);
+    return sum + (m ? parseInt(m[1]) : 0);
+  }, 0);
+
+  const totalReward = tasks.reduce((sum, t) => sum + t.reward, 0);
+
+  return {
+    meta: {
+      title: raw.title || 'Без названия',
+      version: raw.version || '—',
+      updated: raw.updated || '—',
+      parsedAt: new Date().toISOString()
+    },
+    tasks,
+    stats: {
+      totalTasks: tasks.length,
+      totalModules: Object.keys(byModule).length,
+      totalReward,
+      totalMinutes,
+      byModule,
+      byType,
+      byDifficulty
+    }
+  };
+}
+
+/* ============================================================
+   🎨 РЕНДЕР
+============================================================ */
+let parsed = null;
+
+function render(result) {
+  parsed = result;
+
+  // STATS
+  document.getElementById('statTotal').textContent = result.stats.totalTasks;
+  document.getElementById('statModules').textContent = result.stats.totalModules;
+  document.getElementById('statReward').textContent = result.stats.totalReward;
+  document.getElementById('statTime').textContent = result.stats.totalMinutes + ' мин';
+
+  // MODULES
+  const modulesList = document.getElementById('modulesList');
+  const maxCount = Math.max(...Object.values(result.stats.byModule), 1);
+  modulesList.innerHTML = Object.entries(result.stats.byModule)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, count]) => `
+      <div class="module-row">
+        <div class="module-name">${name}</div>
+        <div class="module-bar">
+          <div class="module-bar-fill" style="width:${(count / maxCount) * 100}%"></div>
+        </div>
+        <div class="module-count">${count} зад.</div>
+      </div>
+    `).join('');
+
+  // TASKS TABLE
+  const tbody = document.getElementById('tasksTableBody');
+  tbody.innerHTML = result.tasks.map(t => `
+    <tr>
+      <td><b>${t.id}</b></td>
+      <td>${t.title}</td>
+      <td>${t.module}</td>
+      <td><span class="pill pill-${t.type}">${t.type}</span></td>
+      <td><span class="pill pill-${t.difficulty}">${t.difficulty}</span></td>
+      <td>${t.time}</td>
+      <td>🪙 ${t.reward}</td>
+    </tr>
+  `).join('');
+
+  // RAW JSON
+  document.getElementById('jsonView').innerHTML = syntaxHighlight(result);
+}
+
+/* ============================================================
+   🎨 ПОДСВЕТКА JSON
+============================================================ */
+function syntaxHighlight(obj) {
+  const json = JSON.stringify(obj, null, 2);
+  return json
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"([^"]+)":/g, '<span class="json-key">"$1"</span>:')
+    .replace(/: "([^"]*)"/g, ': <span class="json-str">"$1"</span>')
+    .replace(/: (\d+)/g, ': <span class="json-num">$1</span>')
+    .replace(/: (true|false)/g, ': <span class="json-bool">$1</span>');
+}
+
+/* ============================================================
+   📥 ИСТОЧНИКИ ДАННЫХ
+============================================================ */
+function loadFromEmbedded() {
+  try {
+    const result = parseCourse(window.COURSE_DATA);
+    render(result);
+    toast('✅ Встроенные данные загружены', 'success');
+  } catch (e) {
+    toast('❌ ' + e.message, 'error');
+  }
+}
+
+function loadFromFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const raw = JSON.parse(e.target.result);
+      const result = parseCourse(raw);
+      render(result);
+      toast(`✅ Загружено из ${file.name}`, 'success');
+    } catch (err) {
+      toast('❌ Ошибка парсинга: ' + err.message, 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function loadFromUrl() {
+  const url = prompt('Введи URL JSON-файла:', 'https://example.com/course.json');
+  if (!url) return;
+  fetch(url)
+    .then(r => {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(raw => {
+      const result = parseCourse(raw);
+      render(result);
+      toast('✅ Загружено с URL', 'success');
+    })
+    .catch(e => toast('❌ Не удалось загрузить: ' + e.message, 'error'));
+}
+
+/* ============================================================
+   ⬇️ ЭКСПОРТ
+============================================================ */
+function exportJSON() {
+  if (!parsed) return toast('❌ Сначала загрузи данные', 'error');
+  const blob = new Blob([JSON.stringify(parsed, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'parsed-course.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('⬇️ JSON скачан', 'success');
+}
+
+/* ============================================================
+   🍞 TOAST
+============================================================ */
+function toast(msg, type = '') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+/* ============================================================
+   🚀 СТАРТ
+============================================================ */
+loadFromEmbedded();
+</script>
+
+</body>
+</html>
