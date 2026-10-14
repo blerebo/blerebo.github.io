@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PyStart — Курс Python</title>
+<title>Python с нуля — онлайн-курс</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
   body { background: #f5f7fb; color: #1a1a2e; line-height: 1.6; min-height: 100vh; }
@@ -17,31 +17,7 @@
     position: sticky; top: 0; z-index: 100;
   }
   .logo { font-size: 22px; font-weight: bold; }
-  .header-right { display: flex; align-items: center; gap: 12px; }
-
-  .nav-btn {
-    color: white; text-decoration: none;
-    background: rgba(255,255,255,0.15);
-    padding: 8px 18px; border-radius: 10px;
-    font-weight: 600; font-size: 14px;
-    border: 2px solid rgba(255,255,255,0.25);
-    transition: all 0.2s;
-  }
-  .nav-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-1px); }
-
-  .coin-display {
-    background: rgba(255,255,255,0.2);
-    padding: 8px 18px; border-radius: 50px;
-    font-weight: bold; font-size: 16px;
-    display: flex; align-items: center; gap: 8px;
-    border: 2px solid rgba(255,255,255,0.3);
-    transition: transform 0.3s;
-  }
-  .coin-display.bump { animation: coinBump 0.6s ease; }
-  @keyframes coinBump {
-    0%,100% { transform: scale(1); }
-    40%     { transform: scale(1.2); background: #fbbf24; color: #1a1a2e; }
-  }
+  .header-right { display: flex; align-items: center; gap: 15px; }
 
   .avatar {
     width: 40px; height: 40px; border-radius: 50%;
@@ -50,14 +26,6 @@
     font-weight: bold; font-size: 20px;
     cursor: pointer; border: 2px solid rgba(255,255,255,0.4);
   }
-
-  .reset-btn {
-    background: rgba(255,255,255,0.15);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white; padding: 8px 14px; border-radius: 8px;
-    cursor: pointer; font-size: 13px;
-  }
-  .reset-btn:hover { background: rgba(255,255,255,0.3); }
 
   /* CONTAINER */
   .container { max-width: 1100px; margin: 0 auto; padding: 30px 20px; }
@@ -130,13 +98,6 @@
   .type-badge.code { background: #dbeafe; color: #2563eb; }
   .type-badge.text { background: #fce7f3; color: #be185d; }
 
-  .reward-badge {
-    background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    color: white; padding: 2px 10px; border-radius: 6px;
-    font-size: 12px; font-weight: 700;
-  }
-  .task.done .reward-badge { background: #10b981; }
-
   .arrow { color: #aaa; transition: transform 0.3s; font-size: 20px; }
   .task.open .arrow { transform: rotate(90deg); color: #4f46e5; }
 
@@ -189,12 +150,6 @@
   }
   .btn-check:hover { background: #4338ca; transform: translateY(-1px); }
   .btn-check:disabled { background: #c7cbe0; cursor: not-allowed; transform: none; }
-  .btn-hint {
-    padding: 12px 20px; background: #fef3c7; color: #92400e;
-    border: none; border-radius: 10px; font-size: 15px; font-weight: 600;
-    cursor: pointer;
-  }
-  .btn-hint:hover { background: #fde68a; }
   .btn-reset-task {
     padding: 12px 20px; background: transparent; color: #666;
     border: 2px solid #e0e3ee; border-radius: 10px; font-size: 15px;
@@ -224,39 +179,19 @@
   .empty { text-align: center; padding: 60px 20px; color: #aaa; }
   .empty .icon { font-size: 60px; margin-bottom: 15px; }
 
-  /* COIN FLY */
-  .coin-fly {
-    position: fixed; font-size: 24px; font-weight: 900;
-    color: #f59e0b; pointer-events: none; z-index: 9999;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    animation: coinFly 1.6s ease forwards;
-  }
-  @keyframes coinFly {
-    0%   { opacity: 0; transform: translateY(20px) scale(0.8); }
-    20%  { opacity: 1; transform: translateY(0) scale(1.15); }
-    40%  { transform: translateY(-6px) scale(1); }
-    80%  { opacity: 1; transform: translateY(-6px); }
-    100% { opacity: 0; transform: translateY(-50px); }
-  }
-
   @media (max-width: 640px) {
     header { padding: 12px 18px; flex-wrap: wrap; gap: 10px; }
-    .user-info .name { display: none; }
     .progress-header { flex-direction: column; align-items: flex-start; }
     .container { padding: 20px 12px; }
-    .nav-btn { font-size: 12px; padding: 6px 12px; }
   }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">🐍 PyStart</div>
+  <div class="logo">🐍 Python с нуля</div>
   <div class="header-right">
-    <a href="game.html" class="nav-btn">🏰 Комната героя</a>
-    <div class="coin-display" id="coinDisplay">🪙 <span id="coinCount">0</span></div>
     <div class="avatar" id="avatar">🧑‍💻</div>
-    <button class="reset-btn" onclick="resetAll()">Сброс</button>
   </div>
 </header>
 
@@ -265,12 +200,11 @@
     <div class="progress-header">
       <div>
         <h1>📘 Python с нуля</h1>
-        <p style="color:#888; font-size:14px;">Решай задания — зарабатывай пикоины</p>
+        <p style="color:#888; font-size:14px;">Интерактивный курс из 15 заданий</p>
       </div>
       <div class="stats">
         <div>Решено<b id="doneCount">0 / 15</b></div>
         <div>Прогресс<b id="percentText">0%</b></div>
-        <div>Заработано<b id="earnedCoins">0 🪙</b></div>
       </div>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -278,7 +212,7 @@
 
   <div class="congrats" id="congrats">
     <h3>🎉 Курс пройден!</h3>
-    <p>Все задания решены. Ты настоящий Python-ниндзя!</p>
+    <p>Все задания решены. Отличная работа!</p>
   </div>
 
   <div class="filters">
@@ -297,7 +231,8 @@
 <script src="course-data.js"></script>
 <script>
 /* ============================================================
-   💾 ОБЩЕЕ СОСТОЯНИЕ (тот же ключ, что и в game.html)
+   💾 СОСТОЯНИЕ — общий ключ с game.html (pystart_game_v1)
+   Курс пишет сюда прогресс и монеты, но НЕ показывает их.
 ============================================================ */
 const KEY = 'pystart_game_v1';
 
@@ -330,19 +265,17 @@ let solved = state.solved;
 let userAnswers = state.answers;
 
 /* ============================================================
-   📚 ЗАДАНИЯ ИЗ ОБЩЕГО ФАЙЛА
+   📚 ЗАДАНИЯ
 ============================================================ */
 const TASKS = (window.COURSE_DATA && window.COURSE_DATA.tasks) || [];
 
 /* ============================================================
-   🐍 ПРОВЕРКА КОДА (упрощённый эмулятор)
+   🐍 ПРОВЕРКА КОДА
 ============================================================ */
 function runPythonLite(code, expected) {
   try {
     const outputs = [];
     const fakePrint = (v) => outputs.push(String(v));
-
-    // Подменяем print() на наш сборщик и запускаем в песочнице
     const patched = code.replace(/\bprint\s*\(/g, '__print(');
     // eslint-disable-next-line no-new-func
     const fn = new Function('__print', 'len', 'range', patched);
@@ -352,7 +285,6 @@ function runPythonLite(code, expected) {
       for (let i = start; i < stop; i += step) r.push(i);
       return r;
     });
-
     const got = outputs.join(',');
     return { ok: got === expected, outputs, expected };
   } catch (e) {
@@ -397,7 +329,6 @@ function render() {
     el.dataset.id = task.id;
 
     const typeLabel = { choice: '📝 Тест', code: '💻 Код', text: '✏️ Ответ' }[task.type] || '';
-    const reward = task.reward || 10;
 
     el.innerHTML = `
       <div class="task-header">
@@ -408,15 +339,12 @@ function render() {
             <span class="badge">${task.module}</span>
             <span class="badge type-badge ${task.type}">${typeLabel}</span>
             <span>⏱ ${task.time}</span>
-            <span class="reward-badge">${isDone ? '✓ Получено' : '+' + reward + ' 🪙'}</span>
           </div>
         </div>
         <div class="arrow">›</div>
       </div>
       <div class="task-content">
-        <div class="content-inner">
-          ${renderTaskBody(task, isDone)}
-        </div>
+        <div class="content-inner">${renderTaskBody(task, isDone)}</div>
       </div>
     `;
 
@@ -432,9 +360,6 @@ function render() {
   updateProgress();
 }
 
-/* ============================================================
-   📝 HTML ТЕЛА ЗАДАНИЯ
-============================================================ */
 function renderTaskBody(task, isDone) {
   if (isDone) {
     return `
@@ -484,9 +409,6 @@ function renderTaskBody(task, isDone) {
   }
 }
 
-/* ============================================================
-   🖱 ОБРАБОТЧИКИ ВНУТРИ ЗАДАНИЯ
-============================================================ */
 function attachTaskHandlers(task) {
   const root = document.querySelector(`.task[data-id="${task.id}"]`);
   if (!root) return;
@@ -590,52 +512,14 @@ function checkAnswer(task) {
   if (ok && !solved.includes(task.id)) {
     solved.push(task.id);
 
-    // 💰 Начисляем монеты
+    // 💰 Тихо начисляем монеты (для game.html), но НЕ показываем
     const reward = task.reward || 10;
     state.coins = (state.coins || 0) + reward;
     state.totalEarned = (state.totalEarned || 0) + reward;
 
     save();
-    showCoinReward(reward, root);
-
-    setTimeout(() => render(), 1400);
+    setTimeout(() => render(), 1200);
   }
-}
-
-/* ============================================================
-   🪙 ВСПЛЫВАШКА С МОНЕТАМИ
-============================================================ */
-function showCoinReward(amount, anchorEl) {
-  // Позиция рядом с заданием, где заработали монеты
-  let x = window.innerWidth - 120;
-  let y = 130;
-  if (anchorEl) {
-    const rect = anchorEl.getBoundingClientRect();
-    x = rect.right - 80;
-    y = rect.top + 40;
-  }
-
-  const el = document.createElement('div');
-  el.className = 'coin-fly';
-  el.textContent = `+${amount} 🪙`;
-  el.style.left = x + 'px';
-  el.style.top = y + 'px';
-  document.body.appendChild(el);
-  setTimeout(() => el.remove(), 1600);
-
-  // Анимация монетки в шапке
-  const coinEl = document.getElementById('coinDisplay');
-  if (coinEl) {
-    coinEl.classList.add('bump');
-    setTimeout(() => coinEl.classList.remove('bump'), 600);
-  }
-
-  // Обновляем счётчик монет и аватар
-  document.getElementById('coinCount').textContent = state.coins;
-  const earnedEl = document.getElementById('earnedCoins');
-  if (earnedEl) earnedEl.textContent = state.totalEarned + ' 🪙';
-  const av = document.getElementById('avatar');
-  if (av) av.textContent = state.avatar;
 }
 
 /* ============================================================
@@ -650,33 +534,12 @@ function updateProgress() {
   document.getElementById('percentText').textContent = `${percent}%`;
   document.getElementById('progressFill').style.width = percent + '%';
 
-  const earnedEl = document.getElementById('earnedCoins');
-  if (earnedEl) earnedEl.textContent = (state.totalEarned || 0) + ' 🪙';
-
-  const coinEl = document.getElementById('coinCount');
-  if (coinEl) coinEl.textContent = state.coins || 0;
-
+  // Аватар (меняется из game.html, если открыт в другой вкладке)
   const av = document.getElementById('avatar');
   if (av) av.textContent = state.avatar || '🧑‍💻';
 
   const congrats = document.getElementById('congrats');
   if (congrats) congrats.classList.toggle('show', count === total && total > 0);
-}
-
-/* ============================================================
-   🔄 СБРОС
-============================================================ */
-function resetAll() {
-  if (!confirm('Сбросить весь прогресс, монеты и предметы?')) return;
-  state = defaultState();
-  solved = state.solved;
-  userAnswers = state.answers;
-  saveState();
-  openTaskId = null;
-  currentFilter = 'all';
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
-  render();
 }
 
 /* ============================================================
@@ -692,7 +555,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 /* ============================================================
-   🔁 СИНХРОНИЗАЦИЯ (если открыта игра в другой вкладке)
+   🔁 СИНХРОНИЗАЦИЯ (если game.html открыт в другой вкладке)
 ============================================================ */
 window.addEventListener('storage', () => {
   state = loadState();
